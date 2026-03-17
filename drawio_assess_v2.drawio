@@ -1,0 +1,55 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.0">
+  <diagram id="RYOidR0XDFLxH6OGtOvE" name="Page-1">
+    <mxGraphModel dx="1234" dy="703" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" value="Stage 5 - Assess" vertex="1">
+          <mxGeometry height="36" width="200" x="240" y="12" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="ellipse;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;" value="Post-engagement results" vertex="1">
+          <mxGeometry height="40" width="240" x="220" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" value="ASTRAEA outcome analysis&#xa;Actual vs. predicted collateral damage&#xa;IHL Art. 87&#xa;(Commanders must suppress violations&#xa;and report them up the chain of command)" vertex="1">
+          <mxGeometry height="90" width="304" x="188" y="136" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" value="Significant deviation?" vertex="1">
+          <mxGeometry height="70" width="200" x="240" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;" value="Black Box - full write&#xa;Inputs, decisions, operator ID, outcome&#xa;Accessible only by authorised tribunal" vertex="1">
+          <mxGeometry height="64" width="300" x="190" y="354" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" value="Model update feed&#xa;Lesson data fed back to IHL + moral DBs" vertex="1">
+          <mxGeometry height="52" width="260" x="210" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="Flag for review&#xa;Human investigation&#xa;(Art. 87: Report breach up chain)" vertex="1">
+          <mxGeometry height="80" width="110" x="558" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;opacity=80;" value="Legal access&#xa;Sealed - opened only&#xa;by tribunal order" vertex="1">
+          <mxGeometry height="64" width="140" x="20" y="354" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="5" target="6" value="no">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="5" target="8" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="8" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="9" style="dashed=1;" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

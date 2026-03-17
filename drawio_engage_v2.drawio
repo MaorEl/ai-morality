@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.0">
+  <diagram id="Vxd0U-qGKr_Yz-n4Ru8-" name="Page-1">
+    <mxGraphModel dx="1371" dy="781" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13;" value="Stage 4 - Engage" vertex="1">
+          <mxGeometry height="36" width="200" x="240" y="12" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="ellipse;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;" value="Approved target from Target stage" vertex="1">
+          <mxGeometry height="40" width="240" x="220" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" value="ASTRAEA: collateral damage estimate&#xa;Proportionality + precaution - IHL Art. 57&#xa;(Art. 57(2)(a): Those who plan or decide upon&#xa;an attack must take all feasible precautions -&#xa;this article presupposes human judgment)&#xa;CDEM score computed" vertex="1">
+          <mxGeometry height="90" width="328" x="176" y="136" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" value="CDEM score?&#xa;(Art. 57: Higher harm = higher auth. required)" vertex="1">
+          <mxGeometry height="80" width="200" x="240" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="mode" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" value="Human involvement mode&#xa;(configured by deploying state)" vertex="1">
+          <mxGeometry height="44" width="260" x="210" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="hout" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" value="Human out of the loop&#xa;Autonomous engagement&#xa;All decisions auto-logged&#xa;to Black Box&#xa;(Art. 57: ASTRAEA design&#xa;principle - lowest oversight)" vertex="1">
+          <mxGeometry height="100" width="160" x="20" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="hon" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="Human on the loop&#xa;Operator shown engagement&#xa;plan - may veto within&#xa;time window&#xa;(Art. 57: Operator retains&#xa;cancel authority)" vertex="1">
+          <mxGeometry height="100" width="160" x="210" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="hin" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=0" value="Human in the loop&#xa;Operator actively approves&#xa;+ written justification&#xa;Name + reason logged&#xa;(Art. 57 + Art. 87:&#xa;Full command accountability)" vertex="1">
+          <mxGeometry height="100" width="160" x="400" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" value="Operator approved / proceeding?" vertex="1">
+          <mxGeometry height="72" width="200" x="240" y="596" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" value="Engage - lethal force authorized" vertex="1">
+          <mxGeometry height="52" width="260" x="210" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" value="Engagement aborted" vertex="1">
+          <mxGeometry height="44" width="120" x="20" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" value="Senior cmdr. approval required&#xa;Human in the loop&#xa;(Art. 57(2)(a) + Art. 87: High collateral&#xa;damage requires senior command&#xa;judgment and accountability)" vertex="1">
+          <mxGeometry height="84" width="262" x="558" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;" value="Black Box&#xa;CDEM + decision + mode" vertex="1">
+          <mxGeometry height="44" width="120" x="558" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="4" style="dashed=1;" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="5" target="mode" value="low">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="5" target="10" value="high">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="mode" target="hout" value="out of loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="mode" target="hon" value="on the loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="mode" target="hin" value="in the loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="hout" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="hon" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="hin" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="7" target="8" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="7" target="9" value="no / vetoed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="10" target="hin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="7" style="dashed=1;" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

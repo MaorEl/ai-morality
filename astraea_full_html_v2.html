@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ASTRAEA - Kill chain system</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f0f0f0;color:#222;min-height:100vh}
+#shell{max-width:1100px;margin:0 auto;padding:16px}
+
+#topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:10px 16px;background:#fff;border-radius:10px;border:1px solid #ddd;flex-wrap:wrap}
+#topbar-title{font-size:15px;font-weight:700;flex:1;min-width:200px}
+#breadcrumb{font-size:12px;color:#666}
+#breadcrumb .bc-link{color:#185FA5;cursor:pointer;text-decoration:underline}
+#back-btn{padding:5px 14px;font-size:12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
+#back-btn:hover{background:#f0f0f0}
+
+.hidden{display:none!important}
+
+/* ── OVERVIEW ── */
+.ov-label{font-size:10px;font-weight:700;color:#aaa;letter-spacing:.08em;text-transform:uppercase;text-align:center;margin-bottom:5px}
+.src-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:3px}
+.src-box{font-size:11px;padding:4px 10px;border-radius:5px;background:#E6F1FB;border:1px solid #B5D4F4;color:#0C447C}
+.arrow-c{text-align:center;color:#bbb;font-size:18px;line-height:1.2;margin:2px 0}
+.hub-row{display:flex;justify-content:center;align-items:center;gap:14px;margin-bottom:3px}
+.hub-box{background:#185FA5;color:#fff;border-radius:10px;padding:10px 36px;font-size:15px;font-weight:700;text-align:center}
+.hub-box small{display:block;font-size:11px;font-weight:400;opacity:.8;margin-top:2px}
+.db-col{display:flex;flex-direction:column;gap:6px}
+.db-pill{font-size:11px;padding:5px 12px;border-radius:14px;border:1px solid;white-space:nowrap;text-align:center}
+.db-ihl{background:#E6F1FB;border-color:#6c8ebf;color:#0C447C}
+.db-moral{background:#EEEDFE;border-color:#9673a6;color:#3C3489}
+.db-bb{background:#f5f5f5;border-color:#888;color:#444}
+.stages-row{display:flex;gap:8px;margin-top:8px}
+.sc{flex:1;border-radius:8px;border:2px solid;padding:12px 8px 10px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:center;user-select:none}
+.sc:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.13)}
+.sc .sn{font-size:10px;font-weight:700;opacity:.55;margin-bottom:3px}
+.sc .sname{font-size:14px;font-weight:700;margin-bottom:5px}
+.sc .sdesc{font-size:10px;line-height:1.45;opacity:.72;margin-bottom:7px}
+.sc .stag{font-size:10px;padding:2px 8px;border-radius:10px;display:inline-block;font-weight:600}
+.sc .sihl{font-size:9px;margin-top:5px;opacity:.55}
+.sc .hint{font-size:9px;margin-top:6px;opacity:.35;font-style:italic}
+.s1{background:#E6F1FB;border-color:#378ADD;color:#042C53}.s1 .stag{background:#B5D4F4;color:#042C53}
+.s2{background:#EEEDFE;border-color:#7F77DD;color:#26215C}.s2 .stag{background:#CECBF6;color:#26215C}
+.s3{background:#FAECE7;border-color:#D85A30;color:#4A1B0C}.s3 .stag{background:#F5C4B3;color:#4A1B0C}
+.s4{background:#FCEBEB;border-color:#E24B4A;color:#501313}.s4 .stag{background:#F7C1C1;color:#501313}
+.s5{background:#E1F5EE;border-color:#1D9E75;color:#04342C}.s5 .stag{background:#9FE1CB;color:#04342C}
+
+/* ── STAGE DETAIL ── */
+#view-stage{background:#fff;border-radius:10px;border:1px solid #ddd;padding:0;overflow:hidden}
+.stage-header{padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #eee}
+.stage-badge{padding:6px 18px;border-radius:20px;font-size:14px;font-weight:700;border:2px solid}
+.loop-badge{padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600;background:#FAEEDA;color:#633806;border:1px solid #FAC775}
+.stage-body{padding:20px}
+
+/* flowchart canvas */
+.fc-wrap{width:100%;overflow-x:auto;padding-bottom:8px}
+.fc-svg{display:block;min-width:620px}
+
+/* node styles inside SVG handled inline */
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="topbar">
+    <div id="topbar-title">ASTRAEA - Kill chain system</div>
+  </div>
+
+  <!-- OVERVIEW (always visible) -->
+  <div id="view-overview">
+    <div style="background:#fff;border-radius:10px;border:1px solid #ddd;padding:18px">
+      <div class="ov-label">External data sources</div>
+      <div class="src-row">
+        <div class="src-box">Satellite imagery</div>
+        <div class="src-box">Radar</div>
+        <div class="src-box">Ground sensors</div>
+        <div class="src-box">Human intelligence</div>
+        <div class="src-box">Signal intelligence</div>
+        <div class="src-box">Camera feeds</div>
+        <div class="src-box">Prior mission data</div>
+      </div>
+      <div class="arrow-c">↓</div>
+      <div class="hub-row">
+        <div class="db-col">
+          <div class="db-pill db-ihl">IHL hard constraints DB</div>
+          <div class="db-pill db-moral">Moral weights DB</div>
+        </div>
+        <div class="hub-box">ASTRAEA<small>Kill chain router</small></div>
+        <div class="db-col">
+          <div class="db-pill db-bb">Black Box (sealed)</div>
+          <div class="db-pill db-bb">Tribunal access only</div>
+        </div>
+      </div>
+      <div class="arrow-c">↓</div>
+      <div class="stages-row">
+        <div class="sc s1" id="sc0" onclick="showStage(0)">
+          <div class="sn">01</div>
+          <div class="sname">Find</div>
+          <div class="sdesc">Identify objects, build target bank</div>
+          <div class="sihl">Art. 48</div>
+          <div class="hint">click to expand</div>
+        </div>
+        <div class="sc s2" id="sc1" onclick="showStage(1)">
+          <div class="sn">02</div>
+          <div class="sname">Fix</div>
+          <div class="sdesc">Track, verify, collect location data</div>
+          <div class="sihl">Art. 57(2)(a)(i)</div>
+          <div class="hint">click to expand</div>
+        </div>
+        <div class="sc s3" id="sc2" onclick="showStage(2)">
+          <div class="sn">03</div>
+          <div class="sname">Target</div>
+          <div class="sdesc">Assess legitimacy and proportionality</div>
+          <div class="sihl">Art. 57(2)(a)(iii)</div>
+          <div class="hint">click to expand</div>
+        </div>
+        <div class="sc s4" id="sc3" onclick="showStage(3)">
+          <div class="sn">04</div>
+          <div class="sname">Engage</div>
+          <div class="sdesc">Authorise and apply lethal force</div>
+          <div class="sihl">Art. 57(2)(a) + Art. 87</div>
+          <div class="hint">click to expand</div>
+        </div>
+        <div class="sc s5" id="sc4" onclick="showStage(4)">
+          <div class="sn">05</div>
+          <div class="sname">Assess</div>
+          <div class="sdesc">Review outcomes, feed back to DBs</div>
+          <div class="sihl">Art. 87</div>
+          <div class="hint">click to expand</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL PANEL (below overview, toggled) -->
+  <div id="detail-panel" class="hidden">
+    <div class="dp-header">
+      <div class="dp-header-left">
+        <div class="stage-badge" id="dp-badge"></div>
+      </div>
+      <button class="close-btn" onclick="closeStage()" title="Close">✕</button>
+    </div>
+    <div class="dp-body" id="dp-body"></div>
+  </div>
+</div>
+
+<script>
+const stages=[
+  {
+    name:"Stage 1 - Find",
+    badge:{bg:"#E6F1FB",color:"#042C53",border:"#378ADD"},
+    loop:"Human out of the loop",
+    svg:findSVG
+  },
+  {
+    name:"Stage 2 - Fix",
+    badge:{bg:"#EEEDFE",color:"#26215C",border:"#7F77DD"},
+    loop:"Human out of the loop",
+    svg:fixSVG
+  },
+  {
+    name:"Stage 3 - Target",
+    badge:{bg:"#FAECE7",color:"#4A1B0C",border:"#D85A30"},
+    loop:"Human on the loop (high conf.) / Human in the loop (low conf.)",
+    svg:targetSVG
+  },
+  {
+    name:"Stage 4 - Engage",
+    badge:{bg:"#FCEBEB",color:"#501313",border:"#E24B4A"},
+    loop:"Customer-configured (out / on / in loop) + always in loop for high CDEM",
+    svg:engageSVG
+  },
+  {
+    name:"Stage 5 - Assess",
+    badge:{bg:"#E1F5EE",color:"#04342C",border:"#1D9E75"},
+    loop:"Autonomous analysis + Black Box full write",
+    svg:assessSVG
+  }
+];
+
+function node(x,y,w,h,fill,stroke,text,bold,rx){
+  rx=rx||8;
+  const fs=bold?'font-weight:700;':'';
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>
+<text x="${x+w/2}" y="${y+h/2}" text-anchor="middle" dominant-baseline="central" style="font-size:11px;${fs}fill:${textCol(fill)}">${text}</text>`;
+}
+function mnode(x,y,w,h,fill,stroke,lines,bold){
+  const fs=bold?700:400;
+  const lh=14;
+  const totalH=lines.length*lh;
+  const startY=y+h/2-totalH/2+lh/2;
+  let t=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`;
+  lines.forEach((l,i)=>{
+    t+=`<text x="${x+w/2}" y="${startY+i*lh}" text-anchor="middle" dominant-baseline="central" style="font-size:11px;font-weight:${i===0?fs:400};fill:${textCol(fill)}">${l}</text>`;
+  });
+  return t;
+}
+function diamond(x,y,w,h,fill,stroke,lines){
+  const cx=x+w/2,cy=y+h/2;
+  const pts=`${cx},${y} ${x+w},${cy} ${cx},${y+h} ${x},${cy}`;
+  let t=`<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`;
+  const lh=13;
+  const totalH=lines.length*lh;
+  const startY=cy-totalH/2+lh/2;
+  lines.forEach((l,i)=>{
+    t+=`<text x="${cx}" y="${startY+i*lh}" text-anchor="middle" dominant-baseline="central" style="font-size:10px;fill:${textCol(fill)}">${l}</text>`;
+  });
+  return t;
+}
+function ellipse(x,y,w,h,fill,stroke,text){
+  return `<ellipse cx="${x+w/2}" cy="${y+h/2}" rx="${w/2}" ry="${h/2}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>
+<text x="${x+w/2}" y="${y+h/2}" text-anchor="middle" dominant-baseline="central" style="font-size:11px;fill:${textCol(fill)}">${text}</text>`;
+}
+function arr(x1,y1,x2,y2,label,dashed,color){
+  color=color||'#555';
+  const dash=dashed?'stroke-dasharray="5,3"':'';
+  let t=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1.2" ${dash} marker-end="url(#arrowhead)"/>`;
+  if(label){
+    const mx=(x1+x2)/2,my=(y1+y2)/2;
+    t+=`<text x="${mx+4}" y="${my}" style="font-size:10px;fill:#666">${label}</text>`;
+  }
+  return t;
+}
+function parr(d,label,dashed,color){
+  color=color||'#555';
+  const dash=dashed?'stroke-dasharray="5,3"':'';
+  let t=`<path d="${d}" fill="none" stroke="${color}" stroke-width="1.2" ${dash} marker-end="url(#arrowhead)"/>`;
+  return t;
+}
+function textCol(bg){
+  const dark=['#185FA5','#0C447C','#3C3489','#082b1e','#501313','#A32D2D'];
+  if(dark.some(d=>bg===d)) return '#fff';
+  return '#222';
+}
+const defs=`<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#555"/></marker></defs>`;
+
+function findSVG(){
+  let s=`<svg class="fc-svg" viewBox="0 0 700 580" xmlns="http://www.w3.org/2000/svg">${defs}`;
+  // nodes
+  s+=mnode(220,10,240,36,'#dae8fc','#6c8ebf',['Stage 1 - Find'],true);
+  s+=ellipse(225,62,230,38,'#f5f5f5','#666','Raw battlefield data input');
+  s+=mnode(190,118,300,68,'#dae8fc','#6c8ebf',['ASTRAEA screening','Distinction check - IHL Art. 48','(Parties must distinguish civilians','from combatants at all times)'],true);
+  s+=mnode(510,122,150,48,'#f5f5f5','#666',['Black Box','Auto-logged'],false);
+  s+=diamond(240,210,200,80,'#fff2cc','#d6b656',['Passes','distinction?']);
+  s+=diamond(240,322,200,80,'#fff2cc','#d6b656',['Custom moral','weights OK?']);
+  s+=mnode(208,438,264,44,'#d5e8d4','#82b366',['Object added to target bank'],true);
+  s+=mnode(10,224,138,44,'#f8cecc','#b85450',['Object rejected','Logged to Black Box'],false);
+  s+=mnode(10,336,138,44,'#f8cecc','#b85450',['Object rejected','Logged to Black Box'],false);
+  s+=mnode(30,500,140,32,'#dae8fc','#6c8ebf',['IHL hard constraints'],false);
+  s+=mnode(186,500,140,32,'#e1d5e7','#9673a6',['Custom moral weights'],false);
+  // arrows
+  s+=arr(340,100,340,118);
+  s+=arr(340,186,340,210);
+  // screening → BB dashed (L-shape to avoid crossing)
+  s+=parr('M490 152 L585 152 L585 146 L510 146','','1','#bbb');
+  // distinction yes → moral
+  s+=arr(340,290,340,322);
+  s+=`<text x="346" y="310" style="font-size:10px;fill:#666">yes</text>`;
+  // distinction no → rejected1 (left)
+  s+=arr(240,250,148,250);
+  s+=`<text x="165" y="246" style="font-size:10px;fill:#666">no</text>`;
+  // moral yes → approved
+  s+=arr(340,402,340,438);
+  s+=`<text x="346" y="424" style="font-size:10px;fill:#666">yes</text>`;
+  // moral no → rejected2 (left)
+  s+=arr(240,362,148,362);
+  s+=`<text x="165" y="358" style="font-size:10px;fill:#666">no</text>`;
+  // rejected1 → BB: L-shape up then right, stays left of main flow
+  s+=parr('M10 224 L-10 224 L-10 110 L510 110 L510 122','','1','#bbb');
+  // rejected2 → BB: L-shape
+  s+=parr('M10 336 L-10 336 L-10 110','','1','#bbb');
+  s+='</svg>';
+  return s;
+}
+
+function fixSVG(){
+  let s=`<svg class="fc-svg" viewBox="0 0 700 590" xmlns="http://www.w3.org/2000/svg">${defs}`;
+  s+=mnode(220,10,240,36,'#e1d5e7','#9673a6',['Stage 2 - Fix'],true);
+  s+=ellipse(220,62,240,38,'#f5f5f5','#666','Object from target bank');
+  s+=mnode(180,118,320,80,'#e1d5e7','#9673a6',['ASTRAEA tracking + verification','Re-check distinction - IHL Art. 57(2)(a)(i)','(Do everything feasible to verify','the target before attack - status may have','changed since initial identification)'],true);
+  s+=mnode(520,130,140,44,'#f5f5f5','#666',['Black Box','Auto-logged'],false);
+  s+=diamond(230,220,220,80,'#dae8fc','#9673a6',['Status changed','since Find?']);
+  s+=diamond(230,336,220,80,'#dae8fc','#9673a6',['Location data','sufficient?']);
+  s+=mnode(200,452,280,52,'#d5e8d4','#82b366',['Target confirmed'],true);
+  s+=mnode(540,238,120,44,'#fff2cc','#d6b656',['Return to Find','Re-evaluate'],false);
+  s+=mnode(10,352,140,44,'#f8cecc','#b85450',['Hold - await data','Logged to Black Box'],false);
+  s+=mnode(10,452,140,44,'#f5f5f5','#666',['Black Box','Auto-logged'],false);
+  s+=mnode(20,530,140,32,'#dae8fc','#6c8ebf',['IHL hard constraints'],false);
+  s+=mnode(176,530,140,32,'#e1d5e7','#9673a6',['Custom moral weights'],false);
+  s+=arr(340,100,340,118);
+  s+=arr(340,198,340,220);
+  s+=arr(340,300,340,336,'no');
+  s+=arr(450,260,540,260,'yes');
+  s+=arr(340,416,340,452,'yes');
+  s+=arr(230,376,150,376,'no');
+  s+='</svg>';
+  return s;
+  // Note: no dashed BB arrow from screening in Fix - matches source file
+}
+
+function targetSVG(){
+  // Layout constants
+  // Title: x=220,y=10,w=240,h=36 → center x=340
+  // Ellipse: x=220,y=62,w=240,h=38 → center x=340, bottom=100
+  // Assessment box: x=178,y=116,w=324,h=80 → center x=340, bottom=196
+  // BB box: x=520,y=124,w=160,h=44 → left=520, center y=146
+  // Confidence diamond: cx=340,cy=278, half-w=110,half-h=50 → top=228,bottom=328,right=450,left=230
+  // Mode box: x=195,y=360,w=290,h=52 → center x=340, top=360,bottom=412
+  // Forced box: x=550,y=240,w=220,h=110 → left=550,center y=295,bottom=350
+  // hout: x=10,y=440,w=170,h=100 → center x=95, top=440,bottom=540
+  // hon:  x=205,y=440,w=170,h=100 → center x=290, top=440,bottom=540
+  // hin:  x=400,y=440,w=170,h=100 → center x=485, top=440,bottom=540, left=400
+  // Decision diamond: cx=340,cy=590,half-w=110,half-h=40 → top=550,bottom=630,left=230,right=450
+  // Target approved: x=200,y=666,w=280 → center x=340
+  // Target cancelled: x=10,y=568,w=140 → right=150, center y=590
+
+  let s=`<svg class="fc-svg" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">${defs}`;
+
+  // nodes
+  s+=mnode(220,10,240,36,'#f8cecc','#b85450',['Stage 3 - Target'],true);
+  s+=ellipse(220,62,240,38,'#f5f5f5','#666','Confirmed target from Fix');
+  s+=mnode(178,116,324,80,'#f8cecc','#b85450',['ASTRAEA target assessment','Proportionality - IHL Art. 57(2)(a)(iii)','(Refrain from attacking if expected','civilian harm is excessive vs. military advantage.','Operationalizes Art. 51(5)(b))'],true);
+  s+=mnode(522,122,160,48,'#f5f5f5','#666',['Black Box','All decisions + mode logged'],false);
+  s+=diamond(230,228,220,100,'#f8cecc','#b85450',['ASTRAEA','confidence?']);
+  s+=mnode(550,238,210,110,'#fff2cc','#d6b656',['Mandatory human in the loop','Human out of loop NOT available','ASTRAEA confidence gates minimum','(Art. 57(2)(a)(iii): Uncertainty','requires human judgment -','cannot be overridden by config)'],false);
+  s+=mnode(195,358,290,52,'#ffe6cc','#d79b00',['Human involvement mode','(configured by deploying state)','ASTRAEA confidence: HIGH'],true);
+  s+=mnode(10,438,170,100,'#f8cecc','#b85450',['Human out of the loop','Target auto-approved','All decisions logged','to Black Box','(Available only when','ASTRAEA confidence high)'],false);
+  s+=mnode(200,438,170,100,'#fff2cc','#d6b656',['Human on the loop','Target shown - operator','may veto in time window','(Art. 57(2)(a)(iii):','Operator retains cancel','authority)'],false);
+  s+=mnode(390,438,170,100,'#d5e8d4','#82b366',['Human in the loop','Operator actively approves','+ written justification','Name + reason logged','(Art. 57(2)(a)(iii) +','Art. 87: Full command','accountability)'],false);
+  s+=diamond(230,568,220,80,'#f8cecc','#b85450',['Operator approved','/ proceeding?']);
+  s+=mnode(200,686,280,44,'#d5e8d4','#82b366',['Target approved'],true);
+  s+=mnode(10,582,150,44,'#f8cecc','#b85450',['Target cancelled','Logged with reason'],false);
+  s+=mnode(20,758,140,32,'#dae8fc','#6c8ebf',['IHL hard constraints'],false);
+  s+=mnode(176,758,140,32,'#e1d5e7','#9673a6',['Custom moral weights'],false);
+
+  // arrows
+  // ellipse bottom → assessment top
+  s+=arr(340,100,340,116);
+  // assessment bottom → confidence diamond top
+  s+=arr(340,196,340,228);
+  // assessment → BB (dashed)
+  s+=arr(340,156,522,146,'','1','#bbb');
+
+  // confidence diamond: bottom → mode box (high)
+  s+=arr(340,328,340,358);
+  s+=`<text x="348" y="346" style="font-size:10px;fill:#666">high</text>`;
+
+  // confidence diamond: right → forced box (low)
+  s+=arr(450,278,550,293);
+  s+=`<text x="455" y="272" style="font-size:10px;fill:#666">low</text>`;
+
+  // forced box bottom → routes down then left to hin left edge
+  s+=parr('M655 348 L655 488 L560 488','','','#555');
+
+  // mode box → hout (out of loop)
+  s+=parr('M260 410 L260 428 L95 428 L95 438','','','#555');
+  s+=`<text x="130" y="426" style="font-size:10px;fill:#666">out of loop</text>`;
+
+  // mode box → hon (on the loop)
+  s+=arr(340,410,285,438);
+  s+=`<text x="296" y="427" style="font-size:10px;fill:#666">on the loop</text>`;
+
+  // mode box → hin (in the loop)
+  s+=parr('M420 410 L420 428 L485 428 L485 438','','','#555');
+  s+=`<text x="422" y="426" style="font-size:10px;fill:#666">in the loop</text>`;
+
+  // hout bottom → decision diamond top-left
+  s+=parr('M95 538 L95 558 L230 590','','','#555');
+
+  // hon bottom → decision diamond top
+  s+=parr('M285 538 L285 558 L290 558 L320 568','','','#555');
+
+  // hin bottom → decision diamond top-right
+  s+=parr('M485 538 L485 558 L450 590','','','#555');
+
+  // forced → decision (via right side path down)
+  // already routed through hin, so forced→hin arrow handles it
+
+  // decision bottom → target approved
+  s+=arr(340,648,340,686);
+  s+=`<text x="348" y="670" style="font-size:10px;fill:#666">yes / no veto</text>`;
+
+  // decision left → target cancelled
+  s+=arr(230,608,160,604);
+  s+=`<text x="170" y="600" style="font-size:10px;fill:#666">no / vetoed</text>`;
+
+  // decision → BB dashed
+  s+=parr('M450 608 L700 608 L700 146 L682 146','','1','#bbb');
+
+  s+='</svg>';
+  return s;
+}
+
+function engageSVG(){
+  let s=`<svg class="fc-svg" viewBox="0 0 860 800" xmlns="http://www.w3.org/2000/svg">${defs}`;
+  // nodes
+  s+=mnode(220,10,240,36,'#f8cecc','#b85450',['Stage 4 - Engage'],true);
+  s+=ellipse(200,62,280,38,'#f5f5f5','#666','Approved target from Target stage');
+  s+=mnode(156,118,368,90,'#f8cecc','#b85450',['ASTRAEA: collateral damage estimate','Proportionality + precaution - IHL Art. 57','(Art. 57(2)(a): Those who plan or decide upon','an attack must take all feasible precautions -','this article presupposes human judgment)','CDEM score computed'],true);
+  s+=mnode(540,130,160,48,'#f5f5f5','#666',['Black Box','CDEM + decision + mode'],false);
+  s+=diamond(230,232,220,84,'#f8cecc','#b85450',['CDEM score?','(Art. 57: Higher harm =','higher auth. required)']);
+  s+=mnode(540,228,270,90,'#f8cecc','#b85450',['Senior cmdr. approval required','Human in the loop','(Art. 57(2)(a) + Art. 87: High collateral','damage requires senior command','judgment and accountability)'],false);
+  s+=mnode(195,352,290,44,'#ffe6cc','#d79b00',['Human involvement mode','(configured by deploying state)'],true);
+  s+=mnode(10,432,175,100,'#f8cecc','#b85450',['Human out of the loop','Autonomous engagement','All decisions auto-logged','to Black Box','(Art. 57: ASTRAEA design','principle - lowest oversight)'],false);
+  s+=mnode(205,432,175,100,'#fff2cc','#d6b656',['Human on the loop','Operator shown engagement','plan - may veto within','time window','(Art. 57: Operator retains','cancel authority)'],false);
+  s+=mnode(400,432,175,100,'#d5e8d4','#82b366',['Human in the loop','Operator actively approves','+ written justification','Name + reason logged','(Art. 57 + Art. 87:','Full command accountability)'],false);
+  s+=diamond(220,562,240,80,'#f8cecc','#b85450',['Operator approved','/ proceeding?']);
+  s+=mnode(200,678,280,52,'#d5e8d4','#82b366',['Engage - lethal force authorized'],true);
+  s+=mnode(10,576,138,44,'#f8cecc','#b85450',['Engagement aborted'],false);
+
+  // arrows
+  s+=arr(340,100,340,118);
+  s+=arr(340,208,340,232);
+  // CDEM → BB dashed
+  s+=parr('M524 163 L700 163 L700 154 L700 154','','1','#bbb');
+  s+=parr('M524 163 L700 163 L700 154','','1','#bbb');
+
+  // CDEM score: low → mode box
+  s+=arr(340,316,340,352);
+  s+=`<text x="346" y="338" style="font-size:10px;fill:#666">low</text>`;
+
+  // CDEM score: high → senior cmdr (right)
+  s+=arr(450,274,540,273);
+  s+=`<text x="455" y="268" style="font-size:10px;fill:#666">high</text>`;
+
+  // senior cmdr bottom → hin (L-shape down then left)
+  s+=parr('M675 318 L675 482 L575 482','','','#555');
+
+  // mode → hout
+  s+=parr('M260 396 L260 422 L97 422 L97 432','','','#555');
+  s+=`<text x="110" y="420" style="font-size:10px;fill:#666">out of loop</text>`;
+
+  // mode → hon
+  s+=arr(340,396,293,432);
+  s+=`<text x="298" y="420" style="font-size:10px;fill:#666">on the loop</text>`;
+
+  // mode → hin
+  s+=parr('M420 396 L420 422 L488 422 L488 432','','','#555');
+  s+=`<text x="424" y="420" style="font-size:10px;fill:#666">in the loop</text>`;
+
+  // hout → decision
+  s+=parr('M97 532 L97 552 L230 590','','','#555');
+
+  // hon → decision
+  s+=parr('M293 532 L293 552 L300 552 L320 562','','','#555');
+
+  // hin → decision
+  s+=parr('M488 532 L488 552 L460 562','','','#555');
+
+  // decision yes → engage
+  s+=arr(340,642,340,678);
+  s+=`<text x="346" y="664" style="font-size:10px;fill:#666">yes</text>`;
+
+  // decision no → aborted
+  s+=arr(220,602,148,598);
+  s+=`<text x="152" y="594" style="font-size:10px;fill:#666">no / vetoed</text>`;
+
+  // decision → BB dashed
+  s+=parr('M460 602 L720 602 L720 154 L700 154','','1','#bbb');
+
+  s+='</svg>';
+  return s;
+}
+
+function assessSVG(){
+  let s=`<svg class="fc-svg" viewBox="0 0 720 530" xmlns="http://www.w3.org/2000/svg">${defs}`;
+  s+=mnode(220,10,240,36,'#d5e8d4','#82b366',['Stage 5 - Assess'],true);
+  s+=ellipse(210,62,260,38,'#f5f5f5','#666','Post-engagement results');
+  s+=mnode(178,120,324,90,'#d5e8d4','#82b366',['ASTRAEA outcome analysis','Actual vs. predicted collateral damage','IHL Art. 87','(Commanders must suppress violations','and report them up the chain of command)'],true);
+  s+=diamond(230,234,220,70,'#d5e8d4','#82b366',['Significant','deviation?']);
+  s+=mnode(180,334,320,64,'#f5f5f5','#666',['Black Box - full write','Inputs, decisions, operator ID, outcome','Accessible only by authorised tribunal'],false);
+  s+=mnode(200,428,280,52,'#d5e8d4','#82b366',['Model update feed','Lesson data fed back to IHL + moral DBs'],false);
+  s+=mnode(548,216,140,80,'#fff2cc','#d6b656',['Flag for review','Human investigation','(Art. 87: Report','breach up chain)'],false);
+  s+=mnode(10,334,155,64,'#f5f5f5','#666',['Legal access','Sealed - opened only','by tribunal order'],false);
+  s+=arr(340,100,340,120);
+  s+=arr(340,210,340,234);
+  s+=arr(340,304,340,334,'no');
+  s+=arr(450,269,548,256,'yes');
+  s+=arr(340,398,340,428);
+  s+=arr(618,296,618,360);
+  s+=parr('M618 360 L618 366 L500 366','','','#555');
+  s+=arr(165,366,180,366,'','1','#bbb');
+  s+='</svg>';
+  return s;
+}
+
+function showStage(i){
+  const s=stages[i];
+  // highlight active card, dim others
+  for(let j=0;j<5;j++){
+    const c=document.getElementById('sc'+j);
+    c.classList.toggle('active',j===i);
+    c.classList.toggle('dimmed',j!==i);
+  }
+  // update detail panel
+  const badge=document.getElementById('dp-badge');
+  badge.textContent=s.name;
+  badge.style.cssText=`background:${s.badge.bg};color:${s.badge.color};border-color:${s.badge.border}`;
+  document.getElementById('dp-body').innerHTML=s.svg();
+  document.getElementById('detail-panel').classList.remove('hidden');
+  // scroll to detail panel
+  setTimeout(()=>document.getElementById('detail-panel').scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+function closeStage(){
+  document.getElementById('detail-panel').classList.add('hidden');
+  for(let j=0;j<5;j++){
+    const c=document.getElementById('sc'+j);
+    c.classList.remove('active','dimmed');
+  }
+}
+
+function showOverview(){}
+</script>
+</body>
+</html>
